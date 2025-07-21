@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Excel Reader & Search</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+<input type="file" id="fileInput" />
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Excel Reader + Search</h2>
+  <input type="file" id="excel-file" />
+  <br><br>
+  <input type="text" id="search" placeholder="Search..." />
+  <br><br>
+  <table id="data-table"></table>
+
+  <script src="script.js"></script>
+</body>
+
+<script>
+    let allData = [];
+
+document.getElementById('fileInput').addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+    // ✅ اعمل Search أو عرض بشكل جزئي
+    console.log(jsonData.slice(0, 50)); // عرض أول 50 صف فقط
+  };
+
+  reader.readAsArrayBuffer(file);
+});
+
+
+</script>
+</html>
